@@ -29,6 +29,14 @@ namespace ACB.FCMPushNotifications.Models
         public bool ContentAvailable { get; set; }
 
         /// <summary>
+        /// Used to represent mutable-content in the APNS payload. 
+        /// When a notification is sent and this is set to true, 
+        /// the content of the notification can be modified before it is displayed, 
+        /// using a Notification Service app extension.
+        /// </summary>
+        public bool MutableContent { get; set; }
+
+        /// <summary>
         /// This parameter specifies how long (in seconds) the message should be kept in FCM storage if the device is offline. 
         /// The maximum time to live supported is 4 weeks, and the default value is 4 weeks.
         /// </summary>

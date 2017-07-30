@@ -60,24 +60,10 @@ namespace ACB.FCMPushNotifications.Services
 
             var userTokens = userTokensQuery.ToList();
 
-            if (userTokens.Count == 0)
-            {
-                return new List<NotificationResult>();
-            }
+            if (userTokens.Count == 0) return new List<NotificationResult>();
 
-            var ttl = request.TimeToLive?.TotalSeconds ?? TimeSpan.FromDays(28).TotalSeconds;
-            var notification = new NotificationMessage
-            {
-                DryRun = request.DryRun,
-                RegistrationIds = userTokens.Select(r => r.Token).ToList(),
-                TimeToLive = Math.Max(0, ttl),
-                Notification = new NotificationPayload
-                {
-                    Title = request.Title,
-                    Body = request.Message
-                },
-                Data = request.Data
-            };
+            var notification = MapRequestToMessage(request);
+            notification.RegistrationIds = userTokens.Select(r => r.Token).ToList();
 
             var jsonPayload = await Task.Run(() =>
                 JsonConvert.SerializeObject(
@@ -143,6 +129,47 @@ namespace ACB.FCMPushNotifications.Services
                 case (HttpStatusCode)500:
                     throw new Exception($"Internal Server Error: Multicast Id: {json?.MulticastId}");
             }
+        }
+
+        private NotificationMessage MapRequestToMessage(NotificationRequest request)
+        {
+            var ttl = request.TimeToLive?.TotalSeconds ?? TimeSpan.FromDays(28).TotalSeconds;
+            var notification = new NotificationMessage
+            {
+                DryRun = request.DryRun,
+                TimeToLive = Math.Max(0, ttl),
+                Data = request.Data
+            };
+
+            var notificationPayload = new NotificationPayload
+            {
+                Title = request.Title,
+                Body = request.Message,
+                Sound = request.Sound,
+                ClickAction = request.ClickAction,
+                BodyLocKey = request.BodyLocKey,
+                BodyLocArgs = request.BodyLocArgs,
+                TitleLocKey = request.TitleLocKey,
+                TitleLocArgs = request.TitleLocArgs
+            };
+
+            if (request is ApnsNotificationRequest apnsRequest)
+            {
+                notification.ContentAvailable = apnsRequest.ContentAvailable;
+                notification.MutableContent = apnsRequest.MutableContent;
+                notificationPayload.Badge = apnsRequest.Badge;
+            }
+
+            if (request is AndroidNotificationRequest androidRequest)
+            {
+                notificationPayload.Icon = androidRequest.Icon;
+                notificationPayload.AndroidChannelId = androidRequest.AndroidChannelId;
+                notificationPayload.Tag = androidRequest.Tag;
+                notificationPayload.Color = androidRequest.Color;
+            }
+
+            notification.Notification = notificationPayload;
+            return notification;
         }
 
         private Task HandleResponseError(UserDeviceToken userToken, FCMResponse.Result result)

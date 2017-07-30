@@ -8,7 +8,7 @@ namespace ACB.FCMPushNotifications.Models.Request
         /// When a notification or message is sent and this is set to true, 
         /// an inactive client app is awoken.
         /// </summary>
-        public string ContentAvailable { get; set; }
+        public bool ContentAvailable { get; set; }
 
         /// <summary>
         /// Used to represent mutable-content in the APNS payload. 
@@ -16,7 +16,7 @@ namespace ACB.FCMPushNotifications.Models.Request
         /// the content of the notification can be modified before it is displayed, 
         /// using a Notification Service app extension.
         /// </summary>
-        public string MutableContent { get; set; }
+        public bool MutableContent { get; set; }
 
         /// <summary>
         /// The value of the badge on the home screen app icon. 
