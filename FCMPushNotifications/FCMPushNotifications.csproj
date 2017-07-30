@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <PackageId>fcm-push-notification</PackageId>
+    <Version>1.0.2</Version>
+    <Authors>Bassem Makarem; Siroque</Authors>
+    <Company />
+    <Product>ACB.FCMPushNotifications</Product>
+    <Description>Injectable service library to send push notifications using FCM from an ASP.Net Core MVC Application.</Description>
+    <Copyright>Copyright 2017</Copyright>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/bmak91/fcm-push-notification</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/bmak91/fcm-push-notification</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>FCM;ASP.Net;Core;MVC;Library;C#;iOS;Android;Notifications</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard1.6\FCMPushNotifications.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+</Project>
