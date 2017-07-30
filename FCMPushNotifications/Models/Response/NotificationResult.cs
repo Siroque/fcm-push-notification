@@ -1,4 +1,4 @@
-namespace ACB.FCMPushNotifications.Utils
+namespace ACB.FCMPushNotifications.Models.Response
 {
     /// <summary>
     /// Result object returned for each device notified

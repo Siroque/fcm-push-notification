@@ -1,4 +1,4 @@
-﻿using ACB.FCMPushNotifications;
+﻿using ACB.FCMPushNotifications.Services;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection

@@ -1,4 +1,4 @@
-﻿namespace ACB.FCMPushNotifications
+﻿namespace ACB.FCMPushNotifications.Services
 {
     /// <summary>
     /// Configuration object for PushNotificationService

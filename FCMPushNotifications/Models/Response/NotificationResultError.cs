@@ -1,4 +1,4 @@
-namespace ACB.FCMPushNotifications.Utils
+namespace ACB.FCMPushNotifications.Models.Response
 {
     /// <summary>
     /// Notification result error types
@@ -35,6 +35,11 @@ namespace ACB.FCMPushNotifications.Utils
         MismatchSenderId,
 
         /// <summary>
+        /// Check that the provided parameters have the right name and type.
+        /// </summary>
+        InvalidParameters,
+
+        /// <summary>
         /// Check that the total size of the payload data included in a message does not 
         /// exceed FCM limits: 4096 bytes for most messages, or 2048 bytes in the case of 
         /// messages to topics or notification messages on iOS. This includes both the keys 
@@ -69,6 +74,20 @@ namespace ACB.FCMPushNotifications.Utils
         /// Reduce the number of messages sent to this device and do not immediately 
         /// retry sending to this device.
         /// </summary>
-        DeviceMessageRateExceeded
+        DeviceMessageRateExceeded,
+
+        /// <summary>
+        /// The rate of messages to subscribers to a particular topic is too high. 
+        /// Reduce the number of messages sent for this topic and use exponential 
+        /// backoff to retry sending
+        /// </summary>
+        TopicsMessageRateExceeded,
+
+        /// <summary>
+        /// A message targeted to an iOS device could not be sent because 
+        /// the required APNs SSL certificate was not uploaded or has expired. 
+        /// Check the validity of your development and production certificates. 
+        /// </summary>
+        InvalidApnsCredential
     }
 }

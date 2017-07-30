@@ -1,6 +1,8 @@
 ﻿using ACB.FCMPushNotifications.Data;
 using ACB.FCMPushNotifications.Models;
+using ACB.FCMPushNotifications.Models.Request;
 using ACB.FCMPushNotifications.Utils;
+using ACB.FCMPushNotifications.Models.Response;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
@@ -11,7 +13,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ACB.FCMPushNotifications
+namespace ACB.FCMPushNotifications.Services
 {
     /// <summary>
     /// Service class to send push notifications using FCM.

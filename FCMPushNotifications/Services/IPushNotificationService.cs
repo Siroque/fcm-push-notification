@@ -1,9 +1,10 @@
 ﻿using ACB.FCMPushNotifications.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using ACB.FCMPushNotifications.Utils;
+using ACB.FCMPushNotifications.Models.Request;
+using ACB.FCMPushNotifications.Models.Response;
 
-namespace ACB.FCMPushNotifications
+namespace ACB.FCMPushNotifications.Services
 {
     /// <summary>
     /// Push Notification Service interface
