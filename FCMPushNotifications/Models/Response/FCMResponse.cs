@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using ACB.FCMPushNotifications.Models.Response;
 
-namespace ACB.FCMPushNotifications.Models
+namespace ACB.FCMPushNotifications.Models.Response
 {
     internal class FCMResponse
     {

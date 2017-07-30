@@ -22,22 +22,18 @@ namespace ACB.FCMPushNotifications.Models.Request
 
         /// <summary>
         /// The sound to play when the device receives the notification.
-        /// Android:
-        /// Supports "default" or the filename of a sound resource bundled 
-        /// in the app.Sound files must reside in /res/raw/
-        /// iOS:
-        /// Sound files can be in the main bundle of the client app or 
-        /// in the Library/Sounds folder of the app's data container.
+        /// <para>Android: Supports "default" or the filename of a sound 
+        /// resource bundled in the app.Sound files must reside in /res/raw/</para>
+        /// <para>iOS: Sound files can be in the main bundle of the client 
+        /// app or in the Library/Sounds folder of the app's data container.</para>
         /// </summary>
         public string Sound { get; set; }
 
         /// <summary>
-        /// The action associated with a user click on the notification.
-        /// Android:
-        /// If specified, an activity with a matching intent filter is 
-        /// launched when a user clicks on the notification.
-        /// iOS:
-        /// Corresponds to category in the APNs payload.
+        /// Indicates the action associated with a user click on the notification.
+        /// <para>iOS: Corresponds to category in the APNs payload.</para>
+        /// <para>Android: When this is set, an activity with a matching intent 
+        /// filter is launched when user clicks the notification.</para>
         /// </summary>
         public string ClickAction { get; set; }
 
@@ -45,8 +41,7 @@ namespace ACB.FCMPushNotifications.Models.Request
         /// The key to the body string in the app's string resources 
         /// to use to localize the body text to the user's current 
         /// localization. 
-        /// iOS: 
-        /// Corresponds to loc-key in the APNs payload.
+        /// <para>iOS: Corresponds to loc-key in the APNs payload.</para>
         /// </summary>
         public string BodyLocKey { get; set; }
 
@@ -54,8 +49,7 @@ namespace ACB.FCMPushNotifications.Models.Request
         /// Variable string values to be used in place of the format 
         /// specifiers in body_loc_key to use to localize the body text 
         /// to the user's current localization. 
-        /// iOS: 
-        /// Corresponds to loc-args in the APNs payload.
+        /// <para>iOS: Corresponds to loc-args in the APNs payload.</para>
         /// </summary>
         public string BodyLocArgs { get; set; }
 
@@ -63,8 +57,7 @@ namespace ACB.FCMPushNotifications.Models.Request
         /// The key to the title string in the app's string resources 
         /// to use to localize the title text to the user's current 
         /// localization. 
-        /// iOS: 
-        /// Corresponds to title-loc-key in the APNs payload.
+        /// <para>iOS: Corresponds to title-loc-key in the APNs payload.</para>
         /// </summary>
         public string TitleLocKey { get; set; }
 
@@ -72,8 +65,7 @@ namespace ACB.FCMPushNotifications.Models.Request
         /// Variable string values to be used in place of the format 
         /// specifiers in body_loc_key to use to localize the body text 
         /// to the user's current localization. 
-        /// iOS: 
-        /// Corresponds to loc-args in the APNs payload.
+        /// <para>iOS: Corresponds to loc-args in the APNs payload.</para>
         /// </summary>
         public string TitleLocArgs { get; set; }
 
