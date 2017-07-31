@@ -4,7 +4,10 @@ using System.Text;
 
 namespace ACB.FCMPushNotifications.Models.Request
 {
-    class AndroidNotificationRequest : NotificationRequest
+    /// <summary>
+    /// Describes the android notification to be sent. 
+    /// </summary>
+    public class AndroidNotificationRequest : NotificationRequest
     {
         /// <summary>
         /// The notification's channel id (new in Android O). The app must 

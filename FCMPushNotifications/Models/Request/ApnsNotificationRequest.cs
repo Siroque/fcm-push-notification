@@ -1,7 +1,10 @@
 ﻿
 namespace ACB.FCMPushNotifications.Models.Request
 {
-    class ApnsNotificationRequest : NotificationRequest
+    /// <summary>
+    /// Describes the APNS notification to be sent. 
+    /// </summary>
+    public class ApnsNotificationRequest : NotificationRequest
     {
         /// <summary>
         /// Used to represent content-available in the APNs payload. 

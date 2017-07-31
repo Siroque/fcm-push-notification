@@ -1,4 +1,6 @@
-﻿namespace ACB.FCMPushNotifications.Models
+﻿using System.Collections.Generic;
+
+namespace ACB.FCMPushNotifications.Models
 {
     internal class NotificationPayload
     {
@@ -43,7 +45,7 @@
         /// to the user's current localization. 
         /// <para>iOS: Corresponds to loc-args in the APNs payload.</para>
         /// </summary>
-        public string BodyLocArgs { get; set; }
+        public List<string> BodyLocArgs { get; set; }
 
         /// <summary>
         /// The key to the title string in the app's string resources 
@@ -59,7 +61,7 @@
         /// to the user's current localization. 
         /// <para>iOS: Corresponds to loc-args in the APNs payload.</para>
         /// </summary>
-        public string TitleLocArgs { get; set; }
+        public List<string> TitleLocArgs { get; set; }
 
         /// <summary>
         /// The value of the badge on the home screen app icon. 

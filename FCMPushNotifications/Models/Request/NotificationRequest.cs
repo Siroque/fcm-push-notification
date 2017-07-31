@@ -40,7 +40,8 @@ namespace ACB.FCMPushNotifications.Models.Request
         /// <summary>
         /// The key to the body string in the app's string resources 
         /// to use to localize the body text to the user's current 
-        /// localization. 
+        /// localization. If both, BodyLocKey and BodyLocArgs, are 
+        /// given they would owerride <seealso cref="Message"/> property.
         /// <para>iOS: Corresponds to loc-key in the APNs payload.</para>
         /// </summary>
         public string BodyLocKey { get; set; }
@@ -48,15 +49,17 @@ namespace ACB.FCMPushNotifications.Models.Request
         /// <summary>
         /// Variable string values to be used in place of the format 
         /// specifiers in body_loc_key to use to localize the body text 
-        /// to the user's current localization. 
+        /// to the user's current localization. If both, BodyLocKey and 
+        /// BodyLocArgs, are given they would owerride <seealso cref="Message"/> property.
         /// <para>iOS: Corresponds to loc-args in the APNs payload.</para>
         /// </summary>
-        public string BodyLocArgs { get; set; }
+        public List<string> BodyLocArgs { get; set; }
 
         /// <summary>
         /// The key to the title string in the app's string resources 
         /// to use to localize the title text to the user's current 
-        /// localization. 
+        /// localization. If both, TitleLocKey and TitleLocArgs, are 
+        /// given they would owerride <seealso cref="Title"/> property.
         /// <para>iOS: Corresponds to title-loc-key in the APNs payload.</para>
         /// </summary>
         public string TitleLocKey { get; set; }
@@ -64,10 +67,11 @@ namespace ACB.FCMPushNotifications.Models.Request
         /// <summary>
         /// Variable string values to be used in place of the format 
         /// specifiers in body_loc_key to use to localize the body text 
-        /// to the user's current localization. 
+        /// to the user's current localization. If both, TitleLocKey and 
+        /// TitleLocArgs, are given they would owerride <seealso cref="Title"/> property.
         /// <para>iOS: Corresponds to loc-args in the APNs payload.</para>
         /// </summary>
-        public string TitleLocArgs { get; set; }
+        public List<string> TitleLocArgs { get; set; }
 
         /// <summary>
         /// Specifies how long (in seconds) the message should be kept in 
