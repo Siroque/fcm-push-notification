@@ -60,7 +60,12 @@ namespace ACB.FCMPushNotifications.Services
 
             var userTokens = userTokensQuery.ToList();
 
-            if (userTokens.Count == 0) return new List<NotificationResult>();
+            if (userTokens.Count == 0) return request.UserIds.Select(uid => new NotificationResult()
+            {
+                UserId = uid,
+                Success = false,
+                Error = NotificationResultError.UnknownUserIdentifier
+            }).ToList();
 
             var notification = MapRequestToMessage(request);
             notification.RegistrationIds = userTokens.Select(r => r.Token).ToList();

@@ -1,3 +1,5 @@
+using ACB.FCMPushNotifications.Services;
+
 namespace ACB.FCMPushNotifications.Models.Response
 {
     /// <summary>
@@ -88,6 +90,13 @@ namespace ACB.FCMPushNotifications.Models.Response
         /// the required APNs SSL certificate was not uploaded or has expired. 
         /// Check the validity of your development and production certificates. 
         /// </summary>
-        InvalidApnsCredential
+        InvalidApnsCredential,
+
+        /// <summary>
+        /// Notification request contain an unknown user id.
+        /// Please consider registering a token for this user id first.
+        /// <seealso cref="IPushNotificationService.RegisterUserAsync"/>
+        /// </summary>
+        UnknownUserIdentifier
     }
 }

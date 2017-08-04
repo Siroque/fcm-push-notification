@@ -10,8 +10,8 @@
     <Description>Injectable service library to send push notifications using FCM from an ASP.Net Core MVC Application.</Description>
     <Copyright>Copyright 2017</Copyright>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/bmak91/fcm-push-notification</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/bmak91/fcm-push-notification</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Siroque/fcm-push-notification</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Siroque/fcm-push-notification</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>FCM;ASP.Net;Core;MVC;Library;C#;iOS;Android;Notifications</PackageTags>
     <RootNamespace>ACB.FCMPushNotifications</RootNamespace>
