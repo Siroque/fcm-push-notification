@@ -18,6 +18,6 @@ namespace ACB.FCMPushNotifications.Data
         /// <summary>
         /// UserDeviceTokens Table
         /// </summary>
-        public DbSet<UserDeviceToken> UserDeviceTokens { get; set; }
+        public DbSet<UserInfo> UserDeviceTokens { get; set; }
     }
 }

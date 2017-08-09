@@ -25,7 +25,6 @@ namespace FCMPushNotifications.Test
             IPushNotificationService pushService = new FCMPushNotificationService(options, GetContextWithData());
             NotificationRequest apnsRequest = GetApnsRequest();
 
-
             //Act
             List <NotificationResult> result = await pushService.NotifyAsync(apnsRequest);
 
@@ -40,13 +39,12 @@ namespace FCMPushNotifications.Test
                               .Options;
             var context = new NotifServerDbContext(options);
 
-            var user = new UserDeviceToken {
+            var user = new UserInfo {
                 UserId = "",
                 Token = "",
                 Platform = DevicePlatform.iOS
             };
             context.UserDeviceTokens.Add(user);
-
             context.SaveChanges();
 
             return context;

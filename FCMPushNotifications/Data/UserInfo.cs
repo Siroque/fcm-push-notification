@@ -5,7 +5,7 @@ namespace ACB.FCMPushNotifications.Data
     /// <summary>
     /// Registration token of user device 
     /// </summary>
-    public class UserDeviceToken
+    public class UserInfo
     {
         /// <summary>
         /// User Id 
@@ -34,9 +34,15 @@ namespace ACB.FCMPushNotifications.Data
         /// Android
         /// </summary>
         Android,
+
         /// <summary>
         /// iOS
         /// </summary>
-        iOS
+        iOS,
+
+        /// <summary>
+        /// Unknown
+        /// </summary>
+        Unknown
     }
 }

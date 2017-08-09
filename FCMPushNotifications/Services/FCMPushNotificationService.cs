@@ -108,11 +108,8 @@ namespace ACB.FCMPushNotifications.Services
 
                         if (!string.IsNullOrWhiteSpace(result.RegistrationId))
                         {
-                            tasks.Add(UnregisterUserAsync(userToken.UserId, userToken.Token));
-                            tasks.Add(
-                                RegisterUserAsync(
-                                    userToken.UserId, result.RegistrationId, userToken.Platform
-                                )
+                            tasks.Add(UnregisterUserAsync(userToken));
+                            tasks.Add(RegisterUserAsync(userToken)
                             );
                         }
                         else if (result.Error.HasValue)
@@ -177,13 +174,13 @@ namespace ACB.FCMPushNotifications.Services
             return notification;
         }
 
-        private Task HandleResponseError(UserDeviceToken userToken, FCMResponse.Result result)
+        private Task HandleResponseError(UserInfo userToken, FCMResponse.Result result)
         {
             switch (result.Error)
             {
                 case NotificationResultError.InvalidRegistration:
                 case NotificationResultError.NotRegistered:
-                    return UnregisterUserAsync(userToken.UserId, userToken.Token);
+                    return UnregisterUserAsync(userToken);
             }
             return Task.CompletedTask;
         }
@@ -191,36 +188,57 @@ namespace ACB.FCMPushNotifications.Services
         /// <summary>
         /// Save user device token
         /// </summary>
-        public async Task RegisterUserAsync(string userId, string userToken, DevicePlatform platform)
+        public async Task<bool> RegisterUserAsync(UserInfo user)
         {
-            var isDuplicate = _db.UserDeviceTokens.Any(ur => ur.UserId == userId
-                                                          && ur.Token == userToken);
+            var isDuplicate = IsKnownToken(user);
 
             if (!isDuplicate)
             {
-                _db.UserDeviceTokens.Add(new UserDeviceToken
-                {
-                    UserId = userId,
-                    Token = userToken,
-                    Platform = platform
-                });
-
-                await _db.SaveChangesAsync();
+                _db.UserDeviceTokens.Add(user);
+                int entriesCount = await _db.SaveChangesAsync();
+                return entriesCount != 0;
             }
+            return false;
         }
 
         /// <summary>
         /// Delete user device token
         /// </summary>
-        public async Task UnregisterUserAsync(string userId, string userToken)
+        public async Task<bool> UnregisterUserAsync(UserInfo user)
         {
-            var userRegId = _db.UserDeviceTokens.FirstOrDefault(ur => ur.UserId == userId
-                                                                   && ur.Token == userToken);
+            var userRegId = _db.UserDeviceTokens.FirstOrDefault(ur => ur.UserId == user.UserId
+                                                                   && ur.Token == user.Token);
             if (userRegId != null)
             {
                 _db.UserDeviceTokens.Remove(userRegId);
-                await _db.SaveChangesAsync();
+                int entriesCount = await _db.SaveChangesAsync();
+                return entriesCount != 0;
             }
+            return false;
+        }
+
+        /// <summary>
+        /// Check if user is already known
+        /// </summary>
+        public bool IsKnownUser(UserInfo userInfo)
+        {
+            return _db.UserDeviceTokens.Any(ur => ur.UserId == userInfo.UserId);
+        }
+
+        /// <summary>
+        /// Check if user is already using a specific platform
+        /// </summary>
+        public bool IsUsingPlatform(UserInfo userInfo)
+        {
+            return _db.UserDeviceTokens.Any(ur => ur.UserId == userInfo.UserId && ur.Platform == userInfo.Platform);
+        }
+
+        /// <summary>
+        /// Checks if a specific user + token combination is already persisted
+        /// </summary>
+        public bool IsKnownToken(UserInfo userInfo)
+        {
+            return _db.UserDeviceTokens.Any(ur => ur.UserId == userInfo.UserId && ur.Token == userInfo.Token);
         }
     }
 }

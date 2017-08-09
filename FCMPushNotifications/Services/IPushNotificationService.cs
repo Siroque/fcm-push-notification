@@ -19,20 +19,46 @@ namespace ACB.FCMPushNotifications.Services
         Task<List<NotificationResult>> NotifyAsync(NotificationRequest request);
 
         /// <summary>
-        /// Save user device token
+        /// Save user info object. <seealso cref="UserInfo">
+        /// See UserInfo object description.</seealso>
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="regToken"></param>
-        /// <param name="platform"></param>
+        /// <param name="userInfo"></param>
         /// <returns></returns>
-        Task RegisterUserAsync(string userId, string regToken, DevicePlatform platform);
+        Task<bool> RegisterUserAsync(UserInfo userInfo);
 
         /// <summary>
-        /// Delete user device token
+        /// Delete user device token. <seealso cref="UserInfo">
+        /// See UserInfo object description.</seealso>
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="regToken"></param>
-        /// <returns></returns>
-        Task UnregisterUserAsync(string userId, string regToken);
+        /// <param name="userInfo"></param>
+        /// <returns>true if successfully unregistered</returns>
+        Task<bool> UnregisterUserAsync(UserInfo userInfo);
+
+        /// <summary>
+        /// Check if userId is already known. <seealso cref="UserInfo">
+        /// See UserInfo object description.</seealso>
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <returns>true if userId is already exist</returns>
+        bool IsKnownUser(UserInfo userInfo);
+
+        /// <summary>
+        /// Check if user with specific userId is already using 
+        /// a specific platform. <seealso cref="UserInfo">
+        /// See UserInfo object description.</seealso>
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <returns>true if user with specific userId is already using 
+        /// a specific platform</returns>
+        bool IsUsingPlatform(UserInfo userInfo);
+
+        /// <summary>
+        /// Checks if a specific userId + token combination is 
+        /// already persisted. <seealso cref="UserInfo">
+        /// See UserInfo object description.</seealso>
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <returns>true if userId is already associated with token given</returns>
+        bool IsKnownToken(UserInfo userInfo);
     }
 }
