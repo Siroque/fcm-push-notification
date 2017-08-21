@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ACB.FCMPushNotifications.Data;
+using System;
 using System.Collections.Generic;
-using ACB.FCMPushNotifications.Data;
 
 namespace ACB.FCMPushNotifications.Models.Request
 {
