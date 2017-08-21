@@ -95,8 +95,13 @@ namespace ACB.FCMPushNotifications.Models.Response
         /// <summary>
         /// Notification request contain an unknown user id.
         /// Please consider registering a token for this user id first.
-        /// <seealso cref="IPushNotificationService.RegisterUserAsync"/>
+        /// <seealso cref="IUserPushNotificationService.RegisterUserAsync"/>
         /// </summary>
-        UnknownUserIdentifier
+        UnknownUserIdentifier,
+
+        /// <summary>
+        /// Notification request does not contain any user tokens.
+        /// </summary>
+        IdentifiersNotFound
     }
 }

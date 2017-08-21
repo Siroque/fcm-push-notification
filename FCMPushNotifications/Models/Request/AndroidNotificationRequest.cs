@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ACB.FCMPushNotifications.Models.Request
+﻿namespace ACB.FCMPushNotifications.Models.Request
 {
     /// <summary>
     /// Describes the android notification to be sent. 

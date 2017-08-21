@@ -1,4 +1,5 @@
-﻿using ACB.FCMPushNotifications.Models;
+﻿using ACB.FCMPushNotifications.Data;
+using ACB.FCMPushNotifications.Models;
 using ACB.FCMPushNotifications.Models.Request;
 using ACB.FCMPushNotifications.Utils;
 using ACB.FCMPushNotifications.Models.Response;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -14,16 +16,21 @@ using System.Diagnostics;
 
 namespace ACB.FCMPushNotifications.Services
 {
-    class FCMPushNotificationService : IPushNotificationService
+    /// <summary>
+    /// Service class to send push notifications using FCM.
+    /// </summary>
+    public class FCMUserPushNotificationService : IUserPushNotificationService
     {
         private HttpClient _Http { get; set; }
+        private NotifServerDbContext _db { get; set; }
 
         private string FCMServerToken { get; set; }
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public FCMPushNotificationService(IOptions<PushNotificationServiceOptions> options)
+        public FCMUserPushNotificationService(IOptions<PushNotificationServiceOptions> options,
+            NotifServerDbContext db)
         {
             if (string.IsNullOrWhiteSpace(options.Value.FCMServerToken))
             {
@@ -31,6 +38,8 @@ namespace ACB.FCMPushNotifications.Services
             }
 
             FCMServerToken = options.Value.FCMServerToken;
+
+            _db = db;
 
             _Http = new HttpClient
             {
@@ -42,9 +51,25 @@ namespace ACB.FCMPushNotifications.Services
         /// <summary>
         /// Send notification to users
         /// </summary>
-        public async Task<List<NotificationResult>> NotifyAsync(NotificationRequest request)
+        public async Task<List<NotificationResult>> NotifyUserAsync(NotificationRequest request)
         {
+            var userTokensQuery = _db.UserDeviceTokens.Where(ut => request.UserIds.Contains(ut.UserId));
+            if (request.LimitByPlatform.HasValue)
+            {
+                userTokensQuery = userTokensQuery.Where(ut => ut.Platform == request.LimitByPlatform.Value);
+            }
+
+            var userTokens = userTokensQuery.ToList();
+
+            if (userTokens.Count == 0) return request.UserIds.Select(uid => new NotificationResult()
+            {
+                UserId = uid,
+                Success = false,
+                Error = NotificationResultError.UnknownUserIdentifier
+            }).ToList();
+
             var notification = MapRequestToMessage(request);
+            notification.RegistrationIds = userTokens.Select(r => r.Token).ToList();
 
             var jsonPayload = await Task.Run(() =>
                 JsonConvert.SerializeObject(
@@ -68,21 +93,31 @@ namespace ACB.FCMPushNotifications.Services
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-
                     var tasks = new List<Task>();
                     var results = new List<NotificationResult>();
 
                     for (var i = 0; i < json.Results.Count; i++)
                     {
                         var result = json.Results[i];
-                        var userToken = request.UserIds[i];
+                        var userToken = userTokens[i];
 
                         results.Add(new NotificationResult
                         {
-                            UserId = userToken,
+                            UserId = userToken.UserId,
                             Success = !result.Error.HasValue,
                             Error = result.Error
                         });
+
+                        if (!string.IsNullOrWhiteSpace(result.RegistrationId))
+                        {
+                            tasks.Add(UnregisterUserAsync(userToken));
+                            tasks.Add(RegisterUserAsync(userToken)
+                            );
+                        }
+                        else if (result.Error.HasValue)
+                        {
+                            tasks.Add(HandleResponseError(userToken, result));
+                        }
                     }
 
                     await Task.WhenAll(tasks.ToArray());
@@ -107,8 +142,7 @@ namespace ACB.FCMPushNotifications.Services
             {
                 DryRun = request.DryRun,
                 TimeToLive = Math.Max(0, ttl),
-                Data = request.Data,
-                RegistrationIds = request.UserIds
+                Data = request.Data
             };
 
             var notificationPayload = new NotificationPayload
@@ -140,6 +174,81 @@ namespace ACB.FCMPushNotifications.Services
 
             notification.Notification = notificationPayload;
             return notification;
+        }
+
+        private Task HandleResponseError(UserInfo userToken, FCMResponse.Result result)
+        {
+            switch (result.Error)
+            {
+                case NotificationResultError.InvalidRegistration:
+                case NotificationResultError.NotRegistered:
+                    return UnregisterUserAsync(userToken);
+            }
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Save user device token
+        /// </summary>
+        public async Task<bool> RegisterUserAsync(UserInfo user)
+        {
+            var isDuplicate = IsKnownToken(user.Token);
+
+            if (!isDuplicate)
+            {
+                _db.UserDeviceTokens.Add(user);
+                int entriesCount = await _db.SaveChangesAsync();
+                return entriesCount != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Delete user device token
+        /// </summary>
+        public async Task<bool> UnregisterUserAsync(UserInfo user)
+        {
+            var userRegId = _db.UserDeviceTokens.FirstOrDefault(ur => ur.UserId == user.UserId
+                                                                   && ur.Token == user.Token);
+            if (userRegId != null)
+            {
+                _db.UserDeviceTokens.Remove(userRegId);
+                int entriesCount = await _db.SaveChangesAsync();
+                return entriesCount != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Check if user is already known
+        /// </summary>
+        public bool IsKnownUser(UserInfo userInfo)
+        {
+            return _db.UserDeviceTokens.Any(ur => ur.UserId == userInfo.UserId);
+        }
+
+        /// <summary>
+        /// Check if user is already using a specific platform
+        /// </summary>
+        public bool IsUsingPlatform(UserInfo userInfo)
+        {
+            return _db.UserDeviceTokens.Any(ur => ur.UserId == userInfo.UserId && ur.Platform == userInfo.Platform);
+        }
+
+        /// <summary>
+        /// Checks if a specific user + token combination is already persisted
+        /// </summary>
+        public bool IsKnownUserToken(UserInfo userInfo)
+        {
+            return _db.UserDeviceTokens.Any(ur => ur.UserId == userInfo.UserId && ur.Token == userInfo.Token);
+        }
+
+        /// <summary>
+        /// Checks if a specific token is already persisted
+        /// </summary>
+        public bool IsKnownToken(string token)
+        {
+            return _db.UserDeviceTokens.Any(ur => ur.Token == token);
         }
     }
 }

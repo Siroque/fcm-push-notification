@@ -19,14 +19,14 @@ namespace FCMPushNotifications.Test
             // Arrange
             PushNotificationServiceOptions pushOptions = new PushNotificationServiceOptions()
             {
-                FCMServerToken = ""
+                FCMServerToken = "AAAAHNWuXwM:APA91bE5z_JvXHMHjG9NvaNG0SzmnETma4_HORQsAcveh2_vKj7gKapem4apGEuOTVg9brxL2ut94rQHVDDgceeB6Bk7ma9b0U0DngvFTcDsQI52CvPMkOK6c7UcdMVl7Mx-LxUMTeF6"
             };
             IOptions<PushNotificationServiceOptions> options = Options.Create(pushOptions);
-            IPushNotificationService pushService = new FCMPushNotificationService(options, GetContextWithData());
+            IUserPushNotificationService pushService = new FCMUserPushNotificationService(options, GetContextWithData());
             NotificationRequest apnsRequest = GetApnsRequest();
 
             //Act
-            List <NotificationResult> result = await pushService.NotifyAsync(apnsRequest);
+            List <NotificationResult> result = await pushService.NotifyUserAsync(apnsRequest);
 
             //Assert
             Assert.NotEmpty(result);
@@ -40,8 +40,8 @@ namespace FCMPushNotifications.Test
             var context = new NotifServerDbContext(options);
 
             var user = new UserInfo {
-                UserId = "",
-                Token = "",
+                UserId = "zgv5ed",
+                Token = "fMuDvtvuMBI:APA91bFtVLS7iR-MhbixwUvIssH6qeZQEm9kLEnF7-2l0sJTryGZtLYMou2Bw5nPUeIemHJrEQXEfzMgqcusa8dMWh4uI4zK25MMJl-ZtoYYqTe29MUzqKQLiexYh1SZVFexLcokz-Sp",
                 Platform = DevicePlatform.iOS
             };
             context.UserDeviceTokens.Add(user);
@@ -66,7 +66,8 @@ namespace FCMPushNotifications.Test
                 Badge = "100",
                 Data = new Dictionary<string, string>()
                 {
-
+                    { "service", "callUpdate" },
+                    { "expectation", "value2" }
                 }
             };
         }
